@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Renk Oyunu</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+    <script src="colorUtil.js"></script>
+</head>
+
+<body>
+
+    <div id="header">
+        <p>RENK OYUNU</p>
+    </div>
+
+    <div id="content">
+        <div id="level_selection_screen">
+            <h2>Oyun Zorluk Seviyesi Seçiniz</h2>            
+            <div style="margin: 10px;">
+                <button id="easy_btn" class="choice_btn">3x3</button>
+                <button id="medium_btn" class="choice_btn">4x4</button>
+                <button id="hard_btn" class="choice_btn">5x5</button>
+            </div>
+            
+        </div>   
+        
+        <div id="game_play_screen">
+            <label id="timer">60</label>
+            <br>
+            <div id="game_info_container">                
+                <br>                
+                <div id="target_cell_label">Hedef Hücre:</div>
+                <label id="target_cell" class="target_cell"></label>
+            </div>
+            
+            <div id="game_bord_container">
+            </div>            
+        </div>
+
+        <div id="result_screen">
+            <h2>Skor</h2>
+            <div id="final_score_container">
+                <p id="final_score">100</p>
+            </div>
+            <div>
+                <button class="choice_btn" onclick="changeScreenTo('level_selection_screen')">Yeni Oyun</button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
