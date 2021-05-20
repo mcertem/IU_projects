@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Görüntü İşleme Ödevleri</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="histogramStretching.js"></script>
+    <script src="edgeDetection.js"></script>
+    <script src="edgeDetectionCompassAlgorithm.js"></script>
+    <script src="fileOperations.js"></script>
+</head>
+
+<body>
+    <div id="header">
+        <p>GÖRÜNTÜ İŞLEME ÖDEVLERİM</p>
+    </div>
+
+    <div id="content">
+        <div class="section">
+            <div class="section-title">
+                <p>ÖDEV-1: Histogram Germe ve Eşitleme</p>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div id="fileSelection_container" class="col-12">
+                                <p id="file_selection_lbl">Siyah Beyaz Foto Yükleyiniz</p>
+                                <input id="file" type="file" name="filename" accept="image/*" onchange="onFileSelected(this);" style="display: inline;">
+                                <br>
+                                VEYA
+                                <br>
+                                <button onclick="onRandomTemplateFileSelected()">Random bir dosya getir</button>                                           
+                            </div>
+                            <div id="original_image_container" class="col-12" style="display: none;">
+                                <button id="clear_btn">Temizle</button> 
+                                <img id="bw_img" src="#" alt="black&white image"/>
+                            </div>
+                            <div id="histogram_main_container" class="col-12 pt-2" style="display: none;">
+                                <br>
+                                <p>Orjinal Görselin Histogramı</p>
+                                <div id="histogram_main" style="width:90%;height:250px"></div>
+                            </div>
+                        </div>   
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div id="scretched_img_btn_container"  class="col-12" style="display: none;">
+                                <button id="histogramScretch_btn">Histogram Germe İçin Tıklayınız</button>                     
+                            </div>
+                            <div id="scretched_img_container" class="col-12" style="display: none;">
+                                <p>Gerilen Görsel</p>
+                                <img id="scretched_img" src="#" alt="black&white image" />
+                            </div>
+                            <div id="histogram_scretched_container" class="col-12 pt-2" style="display: none;">
+                                <br>
+                                <p>Gerilen Histogram</p>
+                                <div id="histogram_scretched" style="width:90%;height:250px"></div>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div id="equalizated_img_btn_container"  class="col-12" style="display: none;">
+                                <button id="histogramEqualization_btn">Histogram Eşitleme İçin Tıklayınız</button>                        
+                            </div>
+                            <div id="equalizated_img_container" class="col-12" style="display: none;">
+                                <p>Eşitlenen Görsel</p>
+                                <img id="equalizated_img" src="#" alt="black&white image"/>
+                            </div>
+                            <div id="histogram_equalizated_container" class="col-12 pt-2" style="display: none;">
+                                <br>
+                                <p>Eşitlenen Histogram</p>
+                                <div id="histogram_equalizated" style="width:100%;height:250px"></div>
+                            </div>
+                        </div>                    
+                    </div>                
+                </div>
+            </div>            
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <p>ÖDEV-2: Prewit ve Robert Kenar Belirleme</p>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div id="edgeFileSelection_container" class="col-12">
+                                <p id="edgeFile_selection_lbl">Kenar Belirleme İçin Foto Yükleyiniz</p>
+                                <input id="edgeFile" type="file" name="filename" accept="image/*" onchange="onEdgeFileSelected(this);" style="display: inline;">
+                                <br>
+                                VEYA
+                                <br>
+                                <button onclick="onRandomTemplateEdgeFileSelected()">Random bir dosya getir</button>                                           
+                            </div>
+                            <div id="original_edge_image_container" class="col-12" style="display: none;">
+                                <button id="clearEdge_btn">Kenar Görsellerini Temizle</button> 
+                                <img id="bwEdge_img" src="#" alt="black&white image"/>
+                            </div>
+                        </div>   
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div id="prewitEdge_img_btn_container"  class="col-12" style="display: none;">
+                                <button id="prewitEdge_btn">Prewit Kenar Belirleme İçin Tıklayınız</button>                     
+                            </div>
+                            <div id="prewitEdge_img_container" class="col-12" style="display: none;">
+                                <p>Prewit Görsel</p>
+                                <img id="prewitEdge_img" src="#" alt="black&white image" />
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div id="robertEdge_img_btn_container"  class="col-12" style="display: none;">
+                                <button id="robertEdge_btn">Robert Kenar Belirleme İçin Tıklayınız</button>                        
+                            </div>
+                            <div id="robertEdge_img_container" class="col-12" style="display: none;">
+                                <p>Robert Görsel</p>
+                                <img id="robertEdge_img" src="#" alt="black&white image"/>
+                            </div>
+                        </div>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <p>ÖDEV-3: Compass Algoritması</p>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div id="compassFileSelection_container" class="col-12">
+                                <p id="compassFile_selection_lbl">Compass Algoritması İçin Foto Yükleyiniz</p>
+                                <input id="compassFile" type="file" name="filename" accept="image/*" onchange="onCompassFileSelected(this);" style="display: inline;">
+                                <br>
+                                VEYA
+                                <br>
+                                <button onclick="onRandomTemplateCompassFileSelected()">Random bir dosya getir</button>                                           
+                            </div>
+                            <div id="original_compass_image_container" class="col-12" style="display: none;">
+                                <button id="clearCompass_btn">Görselleri Temizle</button> 
+                                <img id="bwCompass_img" src="#" alt="black&white image"/>
+                            </div>
+                        </div>   
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div id="compass_img_btn_container"  class="col-12" style="display: none;">
+                                <button id="compass_btn">Compass Kenar Belirleme İçin Tıklayınız</button>                     
+                            </div>
+                            <div id="compass_img_container" class="col-12" style="display: none;">
+                                <p>Compass Görsel</p>
+                                <img id="compass_img" src="#" alt="black&white image" />
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+</body>
+</html>
+

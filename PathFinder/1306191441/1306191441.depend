@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1621287627 source:c:\source\kisisel\iu_projects\pathfinder\1306191441\main.cpp
+	<iostream>
+	<bits/stdc++.h>
+

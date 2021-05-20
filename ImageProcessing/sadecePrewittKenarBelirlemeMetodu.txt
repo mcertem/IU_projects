@@ -1,0 +1,101 @@
+// Prewitt kenar belirleme algoritmasını içeren metod
+function detectEdgeByPrewit(pixelArray, imgWidth) {  
+    let prewittArray = [];
+
+    // gri tonlar�n� bulup bir arrayde saklama
+    const grayScale = [];
+    for (let i = 0, j = 0; i < pixelArray.length; i += 4, j++) {
+        grayScale[j] = (pixelArray[i] + pixelArray[i+1] + pixelArray[i+2]) / 3
+    }
+
+    // her pixele prewitt filtreleri uygulanmas�
+    let northEastIndex, northIndex, northWestIndex, eastIndex, westIndex, southEastIndex, southIndex,  southWestIndex;
+    let gX, gY; 
+    for (let i = 0; i < grayScale.length; i++) {
+
+        // pixel �st kenarda m� kontrol�
+        if (i < imgWidth) {
+            continue; 
+        }
+
+        // pixel alt kenarda m� kontrol�
+        if (i > (pixelArray.length - imgWidth) ) {
+            continue; 
+        }
+
+        // pixel  sol kenarda m� kontrol�
+        if (i % imgWidth === 1) {
+            continue; 
+        }
+
+        // pixel sa� kenarda m� kontrol�
+        if (i % imgWidth === 1 ) {
+            continue; 
+        }
+
+        northEastIndex = i - imgWidth - 1;
+        northIndex = i - imgWidth;
+        northWestIndex = i - imgWidth + 1;
+        eastIndex = i - 1;
+        westIndex = i + 1;
+        southEastIndex = i + imgWidth - 1;
+        southIndex = i + imgWidth;
+        southWestIndex = i + imgWidth + 1;
+        
+        /*  Gx maskesi:
+            [ -1  0 -1 ]
+            [ -1  0 -1 ]
+            [ -1  0 -1 ]
+        */
+        gX = Math.abs( grayScale[northWestIndex] + grayScale[westIndex] + grayScale[southWestIndex] 
+                     - grayScale[northEastIndex] - grayScale[eastIndex] - grayScale[southEastIndex]);
+
+        /*  Gy maskesi:
+            [ 1  1  1 ]
+            [ 0  0  0 ]
+            [-1 -1 -1 ]
+        */
+        gY = Math.abs( grayScale[northEastIndex] + grayScale[northIndex] + grayScale[northWestIndex] 
+                     - grayScale[southEastIndex] - grayScale[southIndex] - grayScale[southWestIndex]);
+        
+        prewittArray[i] = Math.sqrt(Math.pow(gX, 2) + Math.pow(gY, 2));
+    }
+
+    // gri tonlar� dizisini orjinal pixel dizisine (rgba) d�n��t�rme
+    for (let i = 0, j = 0; i < pixelArray.length; i += 4, j++) {
+        pixelArray[i] = prewittArray[j];
+        pixelArray[i+1] = prewittArray[j];
+        pixelArray[i+2] = prewittArray[j];
+    }
+
+    return pixelArray;
+}
+
+
+// Görsel verisinin içindeki pixelArrayi çıkarıtp Algoitmayı çağıran üst metod
+function onPrewittButtonClicked() {
+    if (bwEdgeImage) {
+        const imageData = this.getImageDataFromImageSource(bwEdgeImage);
+        const pixelArr = imageData.data;
+        const width = imageData.width;
+        imageData.data = detectEdgeByPrewit(pixelArr, width);
+
+        // burada imageData'yı kullaranark html içinde görseli basan diğer kod parçaları var...
+    }    
+}
+
+
+// Yüklenen görsel dosyası içindeki ImageData'yı extract eden yardımcı metod  (hazır kod)
+function getImageDataFromImageSource(imgSource) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const img = new Image();
+    img.src = imgSource;
+    
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    return ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+}

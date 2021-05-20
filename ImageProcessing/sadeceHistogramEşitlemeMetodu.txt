@@ -1,0 +1,27 @@
+function equalizeHistogram(pixelArray) {
+    const srcLength = pixelArray.length;
+    let equalizedArray = pixelArray;
+
+    // histogramı ve her ton için toplamları oluşturma:
+    const hist = new Float32Array(256);
+    let sum = 0;
+    for (let i = 0; i < srcLength; i++) {
+        ++hist[~~pixelArray[i]];
+        ++sum;
+    }
+
+    // histogramdaki verileri kümüle veri haline getirme:
+    let prev = hist[0];
+    for (let i = 1; i < 256; i++) {
+        hist[i] += prev;
+        prev = hist[i];
+    }
+
+    // histogram eşitleme:
+    var norm = 255 / sum;
+    for (let i = 0; i < srcLength; i++) {
+        equalizedArray[i] = hist[~~pixelArray[i]] * norm;
+    }
+
+    return equalizedArray;
+}

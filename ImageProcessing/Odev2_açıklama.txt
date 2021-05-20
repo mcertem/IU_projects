@@ -1,0 +1,11 @@
+﻿Ödev web uygulaması şeklinde yapılmıştır
+
+--> Önce kullanıcıdan dosya yüklemesi isteniyor (onEdgeFileSelected metodu tetikleniyor)
+
+--> Prwwitt Kenar Belirleme butonuna tıklandığında (onPrewitButtonClicked metodu tetkileniyor)
+önce yüklenen dosyanın pixelleri bir diziye aktarılıyor  (getImageDataFromImageSource metodu tetikleniyor)
+daha sonra bu pixel dizisi bir metod yardımıyla "prewitt kenar belirleme" işlemine tabi tutularak yeni bir piixelarray oluşturuluyor (detectEdgeByPrewit metodu tetikleniyor _ ki ödevde istenen buydu)
+en sonda da bu yeni pixel dizisinden histogramı gerilmiş görsel canvasa basılıp kullanıcıya gösteriylior (generateImgSrcFromImageData ve showImageInTemplate metodları tetiklenyior)
+
+--> Robert Kenar Belirleme butonuna tıklandığında Prewitt işlemi ile birebir aynı adımlar yürütülüyor
+Tek fark: pixel dizisi manulipe edilip kenarlar ortaya çıkartılırken detectEdgeByRobert metodu çağrılıyor. gerisi aynı

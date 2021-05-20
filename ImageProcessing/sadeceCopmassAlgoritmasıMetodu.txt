@@ -1,0 +1,112 @@
+// Compass algoritmasını içeren metod
+function applyCompassAlgorithm(pixelArray, imgWidth) {  
+    let compassArray = [];
+
+    // gri tonlarını bulup bir arrayde saklama
+    const grayScale = [];
+    for (let i = 0, j = 0; i < pixelArray.length; i += 4, j++) {
+        grayScale[j] = (pixelArray[i] + pixelArray[i+1] + pixelArray[i+2]) / 3
+    }
+
+    // 8 yön için filtre katsayılarının tanımlanması:
+    // array içindeki katsayıları sırsaıyla NE, N, NW, E, center, W, SE, S, SW
+	const g0   = {'ne':-1, 'n':-1, 'nw':-1, 'e': 1, 'c':-2, 'w': 1, 'se': 1, 's': 1, 'sw': 1};
+    const g45  = {'ne':-1, 'n':-1, 'nw': 1, 'e':-1, 'c':-2, 'w': 1, 'se': 1, 's': 1, 'sw': 1};
+    const g90  = {'ne':-1, 'n': 1, 'nw': 1, 'e':-1, 'c':-2, 'w': 1, 'se':-1, 's': 1, 'sw': 1};
+    const g135 = {'ne': 1, 'n': 1, 'nw': 1, 'e':-1, 'c':-2, 'w': 1, 'se':-1, 's':-1, 'sw': 1};
+    const g180 = {'ne': 1, 'n': 1, 'nw': 1, 'e': 1, 'c':-2, 'w': 1, 'se':-1, 's':-1, 'sw':-1};
+    const g225 = {'ne': 1, 'n': 1, 'nw': 1, 'e': 1, 'c':-2, 'w':-1, 'se': 1, 's':-1, 'sw':-1};
+    const g315 = {'ne': 1, 'n':-1, 'nw':-1, 'e': 1, 'c':-2, 'w':-1, 'se': 1, 's': 1, 'sw': 1};
+    const g270 = {'ne': 1, 'n': 1, 'nw':-1, 'e': 1, 'c':-2, 'w':-1, 'se': 1, 's': 1, 'sw':-1};
+    const gCoefficientsSet = new Set([g0, g45, g90, g135, g180, g225, g225, g270, g315]);
+
+    // her pixele compass algoritması uygulanması
+    let northEastIndex, northIndex, northWestIndex, eastIndex, westIndex, southEastIndex, southIndex,  southWestIndex;
+    let tmpCompassFilterForPixel;
+    
+    for (let i = 0; i < grayScale.length; i++) {
+
+        // pixel üst kenarda mı kontrolü
+        if (i < imgWidth) {
+            continue; 
+        }
+
+        // pixel alt kenarda mı kontrolü
+        if (i > (pixelArray.length - imgWidth) ) {
+            continue; 
+        }
+
+        // pixel  sol kenarda mı kontrolü
+        if (i % imgWidth === 1) {
+            continue; 
+        }
+
+        // pixel sağ kenarda mı kontrolü
+        if (i % imgWidth === 1 ) {
+            continue; 
+        }
+
+        northEastIndex = i - imgWidth - 1;
+        northIndex = i - imgWidth;
+        northWestIndex = i - imgWidth + 1;
+        eastIndex = i - 1;
+        westIndex = i + 1;
+        southEastIndex = i + imgWidth - 1;
+        southIndex = i + imgWidth;
+        southWestIndex = i + imgWidth + 1;
+
+        for (let g of gCoefficientsSet) {
+            tmpCompassFilterForPixel = g.ne * grayScale[northEastIndex] +
+                                        g.n * grayScale[northIndex] +
+                                        g.nw * grayScale[northWestIndex] +
+                                        g.e * grayScale[eastIndex] +
+                                        g.c * grayScale[i] +
+                                        g.w * grayScale[westIndex] +
+                                        g.se * grayScale[southEastIndex] +
+                                        g.s * grayScale[southIndex] +
+                                        g.sw * grayScale[southWestIndex];
+
+            if (!compassArray[i] || compassArray[i] < tmpCompassFilterForPixel) {
+                compassArray[i] = tmpCompassFilterForPixel;
+            }
+        }
+    }
+
+    // gri tonları dizisini orjinal pixel dizisine (rgba) dönüştürme
+    for (let i = 0, j = 0; i < pixelArray.length; i += 4, j++) {
+        pixelArray[i] = compassArray[j];
+        pixelArray[i+1] = compassArray[j];
+        pixelArray[i+2] = compassArray[j];
+    }
+
+    return pixelArray;
+}
+
+
+// Görsel verisinin içindeki pixelArrayi çıkarıtp Algoritmayı çağıran üst metod
+function onRobertButtonClicked() {
+    if (bwCompassImage) {
+        const imageData = this.getImageDataFromImageSource(bwCompassImage);
+        const pixelArr = imageData.data;
+        const width = imageData.width;
+        imageData.data = applyCompassAlgorithm(pixelArr, width);
+
+        // burada imageData'yı kullaranark html içinde görseli basan diğer kod parçaları var...
+    }    
+}
+
+
+// Yüklenen görsel dosyası içindeki ImageData'yı extract eden yardımcı metod  (hazır kod)
+function getImageDataFromImageSource(imgSource) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const img = new Image();
+    img.src = imgSource;
+    
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    return ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+}

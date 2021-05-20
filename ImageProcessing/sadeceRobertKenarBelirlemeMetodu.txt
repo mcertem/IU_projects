@@ -1,0 +1,92 @@
+﻿// Robert kenar belirleme algoritmasını içeren metod
+function detectEdgeByRobert(pixelArray, imgWidth) {
+    let robertArray = [];
+
+    // gri tonlarını bulup bir arrayde saklama
+    const grayScale = [];
+    for (let i = 0, j = 0; i < pixelArray.length; i += 4, j++) {
+        grayScale[j] = (pixelArray[i] + pixelArray[i+1] + pixelArray[i+2]) / 3
+    }
+
+    // her pixele robert  filtreleri uygulanmsı
+    let southPixelIndex,  southWestPixelIndex, westPixelIndex;
+    let gX, gY; 
+    for (let i = 0; i < grayScale.length; i++) {
+
+        // pixel üst kenarda mı kontrolü
+        if (i < imgWidth) {
+            continue; 
+        }
+
+        // pixel alt kenarda mı kontrolü
+        if (i > (pixelArray.length - imgWidth) ) {
+            continue; 
+        }
+
+        // pixel  sol kenarda mı kontrolü
+        if (i % imgWidth === 1) {
+            continue; 
+        }
+
+        // pixel sağ kenarda mı kontrolü
+        if (i % imgWidth === 1 ) {
+            continue; 
+        }
+        
+        /*  Gx maskesi:
+            [ 1  0 ]
+            [ 0 -1 ]
+        */
+        southWestPixelIndex = i + imgWidth + 1;
+        gX = Math.abs( grayScale[i] - grayScale[southWestPixelIndex] );
+
+        /*  Gy maskesi:
+            [ 0 -1 ]
+            [ 1  0 ]
+        */
+        westPixelIndex = i + 1; 
+        southPixelIndex = i + imgWidth;
+        gY = Math.abs( grayScale[westPixelIndex] - grayScale[southPixelIndex] );
+        
+
+        robertArray[i] = Math.sqrt(Math.pow(gX, 2) + Math.pow(gY, 2));
+    }
+
+    // gri tonları dizisini orjinal pixel dizisine (rgba) dönüştürme
+    for (let i = 0, j = 0; i < pixelArray.length; i += 4, j++) {
+        pixelArray[i] = robertArray[j];
+        pixelArray[i+1] = robertArray[j];
+        pixelArray[i+2] = robertArray[j];
+    }
+
+    return pixelArray;
+}
+
+
+// Görsel verisinin içindeki pixelArrayi çıkarıtp Algoitmayı çağıran üst metod
+function onRobertButtonClicked() {
+    if (bwEdgeImage) {
+        const imageData = this.getImageDataFromImageSource(bwEdgeImage);
+        const pixelArr = imageData.data;
+        const width = imageData.width;
+        imageData.data = detectEdgeByRobert(pixelArr, width);
+
+        // burada imageData'yı kullaranark html içinde görseli basan diğer kod parçaları var...
+    }    
+}
+
+
+// Yüklenen görsel dosyası içindeki ImageData'yı extract eden yardımcı metod  (hazır kod)
+function getImageDataFromImageSource(imgSource) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const img = new Image();
+    img.src = imgSource;
+    
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    return ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+}

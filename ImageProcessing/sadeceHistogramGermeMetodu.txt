@@ -1,0 +1,32 @@
+function scretchHistogram(pixelArray, newMinTone = 0, newMaxTone = 255) {  
+    const srcLength = pixelArray.length;
+    let scretchedArray = pixelArray;
+
+    // gri tonlarını bulup bir arrayde saklama
+    const grayScale = [];
+    for (let i = 0, j = 0; i < pixelArray.length; i += 4, j++) {
+        grayScale[j] = (pixelArray[i] + pixelArray[i+1] + pixelArray[i+2]) / 3
+    }
+
+    // Tonların min ve max değerini bulma:
+    let oldMinTone = 255;
+    let oldMaxTone = 0;
+    for (let i = 0; i < grayScale.length; i++) {
+        if (grayScale[i] < oldMinTone) {
+            oldMinTone = grayScale[i];
+        }
+        if (grayScale[i] > oldMaxTone) {
+            oldMaxTone = grayScale[i];
+        }
+    }
+
+    // genişletilmiş görsel için piksel verilerini oluşturma
+    for (let i = 0; i < srcLength; i++) {
+        scretchedArray[i] = ((newMaxTone - newMinTone) / (oldMaxTone - oldMinTone) ) 
+                            * (pixelArray[i] - oldMinTone)
+                            + newMinTone;
+    }
+
+    return scretchedArray;
+}
+

@@ -1,0 +1,11 @@
+Ödev web uygulaması şeklinde yapılmıştır
+
+--> Önce kullanıcıdan dosya yüklemesi isteniyor (onFileSelected metodu tetikleniyor)
+
+--> HistogramGerme butonuna tıklandığında (onScretchImageButtonClicked metodu tetkileniyor)
+önce yüklenen dosyanın pixelleri bir diziye aktarılıyor  (getImageDataFromImageSource metodu tetikleniyor)
+daha sonra bu pixel dizisi bir metod yardımıyla "histogram germe" işlemine tabi tutularak yeni bir piixelarray oluşturuluyor (scretchHistogram metodu tetikleniyor _ ki ödevde istenen buydu)
+en sonda da bu yeni pixel dizisinden histogramı gerilmiş görsel canvasa basılıp kullanıcıya gösteriylior (generateImgSrcFromImageData ve showImageInTemplate metodları tetiklenyior)
+
+--> Histogram eşitleme butonuna tıklandığında germe işlemi ile birebir aynı adımlar yürütülüyor
+Tek fark: pixel dizisi manulipe edilirken, equalizeHistogram metodu çağrılıyor. gerisi aynı

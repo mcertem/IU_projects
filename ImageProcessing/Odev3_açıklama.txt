@@ -1,0 +1,8 @@
+﻿Ödev web uygulaması şeklinde yapılmıştır
+
+--> Önce kullanıcıdan dosya yüklemesi isteniyor (onCompassFileSelected metodu tetikleniyor)
+
+--> Compass Kenar Belirleme butonuna tıklandığında (onCompassButtonClicked metodu tetkileniyor)
+önce yüklenen dosyanın pixelleri bir diziye aktarılıyor  (getImageDataFromImageSource metodu tetikleniyor)
+daha sonra bu pixel dizisi bir metod yardımıyla "compass algoritma uygulaması" işlemine tabi tutularak yeni bir piixelarray oluşturuluyor (applyCompassAlgorithm metodu tetikleniyor _ ki ödevde istenen buydu)
+en sonda da bu yeni pixel dizisinden histogramı gerilmiş görsel canvasa basılıp kullanıcıya gösteriylior (generateImgSrcFromImageData ve showImageInTemplate metodları tetiklenyior)
